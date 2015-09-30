@@ -120,11 +120,20 @@ class Well(object):
 
     def __repr__(self):
         """
-        Return a string representation of a Well.
+        Return a string representation of a Well object.
 
         """
-        return "Well(%s, %s, %s)" % (str(self.container), str(self.index),
-                                     str(self.volume))
+        return "Well(%s, index=%s, volume=%s%s)" % (str(self.container), str(self.container.humanize(self.index)),
+                                     str(self.volume), ", name=\"" + str(self.name) + "\"" if self.name else "")
+
+    def __str__(self):
+        """
+        Return a more concise string representation of a Well object.
+        """
+        return "%s/%s, %s %s" % (str(self.container),
+                                 str(self.container.humanize(self.index)),
+                                 str(self.volume),
+                                 "(\"" + str(self.name) + "\")" if self.name else "")
 
 
 class WellGroup(object):
@@ -488,8 +497,18 @@ class Container(object):
 
     def __repr__(self):
         """
-        Return a string representation of a Container using the specified name.
-        (ex. Container('my_plate'))
+        Return a string representation of a Container.
 
         """
-        return "Container(%s)" % (str(self.name))
+        return "Container(%s, %s, %s%s)" % (str(self.id) if self.id else "None",
+                "ContainerType(" + str(self.container_type.shortname) + ")",
+                "\"" + str(self.name) + "\"" if self.name else "None",
+                ", " + str(self.storage) if self.storage else "")
+
+    def __str__(self):
+        """
+        Return a simplified string representation of a Container.
+
+        """
+        return "Container(%s%s)" % (str(self.container_type.shortname),
+                                      ", \"" + str(self.name) + "\"" if self.name else "")
