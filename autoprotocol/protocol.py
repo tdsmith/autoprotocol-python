@@ -1,3 +1,4 @@
+from __future__ import print_function
 from .container import Container, Well, WellGroup
 from .container_type import ContainerType, _CONTAINER_TYPES
 from .unit import Unit
@@ -3121,6 +3122,12 @@ class Protocol(object):
           Seal type to be used, such as "ultra-clear" or "foil".
 
         """
+        if not (ref.is_covered() or ref.is_sealed()):
+            ref.cover = "seal"
+        else:
+            print("WARNING: You cannot seal a plate that is "
+                   "already %sed" % (ref.cover), file=sys.stderr)
+            return
         self.instructions.append(Seal(ref, type))
 
     def unseal(self, ref):
@@ -3163,6 +3170,7 @@ class Protocol(object):
             Container to be unsealed
 
         """
+        ref.cover = None
         self.instructions.append(Unseal(ref))
 
     def cover(self, ref, lid='standard'):
@@ -3200,6 +3208,12 @@ class Protocol(object):
             Type of lid to cover container with
 
         """
+        if not (ref.is_covered() or ref.is_sealed()):
+            ref.cover = "cover"
+        else:
+            print("WARNING: You cannot cover a plate that is "
+                   "already %sed" % ref.cover, file=sys.stderr)
+            return
         self.instructions.append(Cover(ref, lid))
 
     def uncover(self, ref):
@@ -3242,6 +3256,7 @@ class Protocol(object):
             Container to remove lid from
 
         """
+        ref.cover = None
         self.instructions.append(Uncover(ref))
 
     def flow_analyze(self, dataref, FSC, SSC, neg_controls, samples,
