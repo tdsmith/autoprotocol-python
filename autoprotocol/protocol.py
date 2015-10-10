@@ -2453,7 +2453,6 @@ class Protocol(object):
             Length of time that acceleration should be applied.
 
         """
-        self._adjust_cover(ref, "spin")
         self.instructions.append(Spin(ref, acceleration, duration))
 
     def thermocycle(self, ref, groups,

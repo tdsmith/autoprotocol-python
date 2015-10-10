@@ -753,6 +753,7 @@ class LuminescenceTestCase(unittest.TestCase):
         p.luminescence(test_plate, test_plate.well(0), "test_reading")
         self.assertTrue(isinstance(p.instructions[0].wells, list))
 
+
 class AcousticTransferTestCase(unittest.TestCase):
     def test_append(self):
         p = Protocol()
@@ -777,3 +778,31 @@ class AcousticTransferTestCase(unittest.TestCase):
                             dest.wells(0,1,2,3), "1:microliter", one_source=True)
         self.assertTrue(p.instructions[-1].data["groups"][0]["transfer"][-1]["from"] == echo.well(1))
         self.assertTrue(p.instructions[-1].data["groups"][0]["transfer"][0]["from"] == echo.well(0))
+
+class CoverStatusTestCase(unittest.TestCase):
+    def test_ref_cover_status(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-pcr", discard=True, cover="seal")
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "seal")
+        self.assertTrue(p.refs[cont.name].opts['cover'])
+
+    def test_implicit_unseal(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-pcr", discard=True)
+        self.assertFalse(cont.cover)
+        p.seal(cont)
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "seal")
+        p.mix(cont.well(0))
+        self.assertFalse(cont.cover)
+
+    def test_implicit_uncover(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-flat", discard=True)
+        self.assertFalse(cont.cover)
+        p.cover(cont, "universal")
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "cover")
+        p.mix(cont.well(0))
+        self.assertFalse(cont.cover)
