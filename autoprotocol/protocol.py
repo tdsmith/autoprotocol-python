@@ -2048,6 +2048,7 @@ class Protocol(object):
                     # Initialize new stamp list/instruction
                     self.instructions.append(Stamp([trans]))
 
+
     def sangerseq(self, cont, wells, dataref, type="standard", primer=None):
         """
         Send the indicated wells of the container specified for Sanger sequencing.
