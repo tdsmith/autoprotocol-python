@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/)
 Added
 - Include well properties in outs
 - `extend()` method to WellGroup
+- Track plate cover status - Container objects now have a `cover` attribute, implicit plate unsealing or uncovering prior to steps that require the plate to be uncovered.
 
 Changed
 - Allow single Well reading for Absorbance, Fluorescence and Luminescence
