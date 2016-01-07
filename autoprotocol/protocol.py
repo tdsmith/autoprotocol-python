@@ -1088,19 +1088,6 @@ class Protocol(object):
             self.append(Pipette([cons]))
         else:
             self._pipette([cons])
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-
-    def stamp(self, source_origin, dest_origin, volume, shape=dict(rows=8,
-              columns=12), mix_before=False, mix_after=False, mix_vol=None,
-              repetitions=10, flowrate="100:microliter/second",
-              aspirate_speed=None, dispense_speed=None, aspirate_source=None,
-              dispense_target=None, pre_buffer=None, disposal_vol=None,
-              transit_vol=None, blowout_buffer=None, one_source=False,
-              one_tip=False, new_group=False):
->>>>>>> add Protocol.adjust_cover() to stamp
 
     def acoustic_transfer(self, source, dest, volume, one_source=False,
                           droplet_size="25:nanoliter"):
@@ -1993,8 +1980,6 @@ class Protocol(object):
                 else:
                     # Initialize new stamp list/instruction
                     self.instructions.append(Stamp([trans]))
->>>>>>> add Protocol.adjust_cover() to stamp
-
 
     def sangerseq(self, cont, wells, dataref, type="standard", primer=None):
         """
