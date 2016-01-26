@@ -3499,7 +3499,8 @@ class Protocol(object):
             source.volume -= volume
         self.instructions.append(Spread(source, dest, volume))
 
-    def autopick(self, source, dests, min_count=0, criteria={}, dataref="autopick"):
+    def autopick(self, sources, dests, min_abort=0, criteria={},
+                 dataref="autopick", newpick=False):
         """
         Pick at least `min_count` colonies from the location specified in "from" to
         the location(s) specified in "to" in the order that they are specified
@@ -3512,30 +3513,50 @@ class Protocol(object):
 
         Parameters
         ----------
-        source : str, Well
+        sources : list of Well
           Reference to plate containing agar and colonies to pick
         dests : list of str, list of Well
           List of destination(s) for picked colonies
         criteria : dict
           Dictionary of autopicking criteria.
-        min_count : int, optional
-            Minimum number of colonies to detect in order to continue with
-            autopicking
+        min_abort : int, optional
+          Total number of colonies that must be detected in the aggregate
+          list of `from` wells to avoid aborting the entire run.
+
 
         Raises
         ------
         RuntimeError
-            If `min_count` is greater than the number of `dests` specified
+            If `min_abort` is greater than the number of `dests` specified
 
         """
+        pick = {}
+
+        if isinstance(sources, Well) or isinstance(sources, str):
+            pick["from"] = [sources]
+        else:
+            pick["from"] = sources
+
+        if len(set([s.container for s in sources])) > 1:
+            raise RuntimeError("All source wells for autopick must exist "
+                               "on the same container")
+
         if isinstance(dests, Well) or isinstance(dests, str):
-            dests = [dests]
-        if len(dests) < min_count:
+            pick["to"] = [dests]
+
+        if len(dests) < min_abort:
             raise RuntimeError("Your minimum colony count cannot be greater "
                                "than the number of destination wells "
                                "specified.")
+        else:
+            pick["to"] = dests
 
-        self.instructions.append(Autopick(source, dests, min_count, criteria, dataref))
+        group = [pick]
+
+        if not newpick and self.instructions and self.instructions[-1].op == "autopick":
+          self.instructions[-1].groups.append(group)
+        else:
+          self.instructions.append(Autopick(group, min_abort, criteria, dataref))
 
     def image_plate(self, ref, mode, dataref):
         """
