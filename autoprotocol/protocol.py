@@ -3533,6 +3533,7 @@ class Protocol(object):
         pick = {}
 
         if isinstance(sources, Well) or isinstance(sources, str):
+            sources = [sources]
             pick["from"] = [sources]
         else:
             pick["from"] = sources
