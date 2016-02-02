@@ -216,8 +216,6 @@ class WellVolumeTestCase(unittest.TestCase):
         self.assertTrue(c.well(0).volume == Unit(0.2, "microliter"))
         c.well(1).set_volume(".1:milliliter")
         self.assertTrue(c.well(1).volume == Unit(100, "microliter"))
-        with self.assertRaises(ValueError):
-            c.well(2).set_volume("1:milliliter")
 
 class WellPropertyTestCase(unittest.TestCase):
     def test_set_properties(self):
